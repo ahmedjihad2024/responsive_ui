@@ -15,12 +15,15 @@ part 'dynamic/adaptive_widget.dart';
 
 part 'dynamic/dynamic_orientation.dart';
 
+// scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+// navigatorKey = GlobalKey<NavigatorState>();
+
 final DeviceDetails deviceDetails = DeviceDetails();
 late GlobalKey<NavigatorState> navigatorKey;
 late GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
 late NavigatorState? navigator;
 
-class ResponsiveLayout extends StatelessWidget {
+class ResponsiveLayout extends StatefulWidget {
   final Widget Function(BuildContext context, DeviceDetails info) builder;
   final double? _designWidth;
   final double? _designHeight;
@@ -66,76 +69,99 @@ class ResponsiveLayout extends StatelessWidget {
           splitScreenMode: splitScreenMode);
 
   @override
+  State<StatefulWidget> createState() => _ResponsiveLayoutState(builder, _designWidth, _designHeight, _splitScreenMode);
+}
+
+class _ResponsiveLayoutState extends State<ResponsiveLayout> {
+  final Widget Function(BuildContext context, DeviceDetails info) builder;
+  final double? _designWidth;
+  final double? _designHeight;
+  final bool _splitScreenMode;
+
+  _ResponsiveLayoutState(this.builder, this._designWidth, this._designHeight,
+      this._splitScreenMode);
+
+  @override
+  void initState() {
+    scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+    navigatorKey = GlobalKey<NavigatorState>();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    TargetPlatform platform = Theme.of(context).platform;
-      return OrientationBuilder(builder: (context, orientation){
-        var size =
-            WidgetsBinding.instance.platformDispatcher.views.first.physicalSize /
-                WidgetsBinding
-                    .instance.platformDispatcher.views.first.devicePixelRatio;
-        // final Orientation orientation = size.width > size.height ? Orientation.landscape : Orientation.portrait;
+    TargetPlatform platform = Theme
+        .of(context)
+        .platform;
+    return OrientationBuilder(builder: (context, orientation) {
+      var size =
+          WidgetsBinding.instance.platformDispatcher.views.first.physicalSize /
+              WidgetsBinding
+                  .instance.platformDispatcher.views.first.devicePixelRatio;
+      // final Orientation orientation = size.width > size.height ? Orientation.landscape : Orientation.portrait;
 
-        final isMobile =
-            platform == TargetPlatform.android || platform == TargetPlatform.iOS;
+      final isMobile =
+          platform == TargetPlatform.android || platform == TargetPlatform.iOS;
 
-        var deviceType = _deviceType(
-          width: isMobile
-              ? orientation == Orientation.landscape
-              ? size.height
-              : size.width
-              : size.width,
-          orientation: orientation,
-        );
-
-        /// check if size of other platforms is mobile then
-        /// deals like a mobile
-        var isMobile2 = ((platform != TargetPlatform.iOS &&
-            platform != TargetPlatform.android) && (kIsWeb && deviceType != DEVICE_SIZE_TYPE.DESKTOP));
-
-        final originalWidth = isMobile || isMobile2
+      var deviceType = _deviceType(
+        width: isMobile
             ? orientation == Orientation.landscape
             ? size.height
             : size.width
-            : size.width;
+            : size.width,
+        orientation: orientation,
+      );
 
-        final originalHeight = isMobile || isMobile2
-            ? orientation == Orientation.landscape
-            ? size.width
-            : size.height
-            : size.height;
+      /// check if size of other platforms is mobile then
+      /// deals like a mobile
+      var isMobile2 = ((platform != TargetPlatform.iOS &&
+          platform != TargetPlatform.android) &&
+          (kIsWeb && deviceType != DEVICE_SIZE_TYPE.DESKTOP));
+
+      final originalWidth = isMobile || isMobile2
+          ? orientation == Orientation.landscape
+          ? size.height
+          : size.width
+          : size.width;
+
+      final originalHeight = isMobile || isMobile2
+          ? orientation == Orientation.landscape
+          ? size.width
+          : size.height
+          : size.height;
 
 
+      deviceDetails
+        ..setOrientation = orientation
+        ..setHeight = originalHeight
+        ..setWidth = originalWidth
+        ..setDesignHeight = _designHeight ?? deviceDetails.height
+        ..setDesignWidth = _designWidth ?? deviceDetails.width
+        ..setScaleWidth = deviceDetails.width / deviceDetails.designWidth
+        ..setScaleHeight = (_splitScreenMode
+            ? max(deviceDetails.height, 700)
+            : deviceDetails.height) /
+            deviceDetails.designHeight
+        ..setDeviceType = deviceType
+        ..setIsMobile = isMobile;
 
-        deviceDetails
-          ..setOrientation = orientation
-          ..setHeight = originalHeight
-          ..setWidth = originalWidth
-          ..setDesignHeight = _designHeight ?? deviceDetails.height
-          ..setDesignWidth = _designWidth ?? deviceDetails.width
-          ..setScaleWidth = deviceDetails.width / deviceDetails.designWidth
-          ..setScaleHeight = (_splitScreenMode
-              ? max(deviceDetails.height, 700)
-              : deviceDetails.height) /
-              deviceDetails.designHeight
-          ..setDeviceType = deviceType
-          ..setIsMobile = isMobile;
-
-        Widget widget = builder(context, deviceDetails);
-        if (widget is MaterialApp) {
-          var materialApp = ReCreateApp.materialApp(widget);
-          navigatorKey = materialApp.navigatorKey;
-          navigator = navigatorKey.currentState;
-          scaffoldMessengerKey = materialApp.scaffoldMessengerKey;
-          return materialApp.materialApp;
-        } else if (widget is CupertinoApp) {
-          var cupertinoApp = ReCreateApp.cupertinoApp(widget);
-          navigatorKey = cupertinoApp.navigatorKey;
-          navigator = navigatorKey.currentState;
-          return cupertinoApp.cupertinoApp;
-        } else {
-          return widget;
-        }
-      });
+      Widget widget = builder(context, deviceDetails);
+      if (widget is MaterialApp) {
+        if (widget.scaffoldMessengerKey != null)
+          scaffoldMessengerKey = widget.scaffoldMessengerKey!;
+        if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
+        var r = ReCreateApp.materialApp(
+            widget, navigatorKey, scaffoldMessengerKey);
+        navigator = navigatorKey.currentState;
+        return r;
+      } else if (widget is CupertinoApp) {
+        if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
+        var r = ReCreateApp.cupertinoApp(widget, navigatorKey);
+        navigator = navigatorKey.currentState;
+        return r;
+      } else {
+        return widget;
+      }
+    });
   }
 
   DEVICE_SIZE_TYPE _deviceType(
@@ -147,17 +173,17 @@ class ResponsiveLayout extends StatelessWidget {
       _ => DEVICE_SIZE_TYPE.NONE
     };
   }
+
 }
 
+
 class ReCreateApp {
-  static ({
-    MaterialApp materialApp,
-    GlobalKey<NavigatorState> navigatorKey,
-    GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey
-  }) materialApp(MaterialApp old) {
+  static MaterialApp materialApp(MaterialApp old,
+      GlobalKey<NavigatorState> NewNavigatorKey,
+      GlobalKey<ScaffoldMessengerState> newScaffoldMessengerKey) {
     var scaffoldMessengerKey =
-        old.scaffoldMessengerKey ?? GlobalKey<ScaffoldMessengerState>();
-    var navigatorKey = old.navigatorKey ?? GlobalKey<NavigatorState>();
+        old.scaffoldMessengerKey ?? newScaffoldMessengerKey;
+    var navigatorKey = old.navigatorKey ?? NewNavigatorKey;
     MaterialApp materialApp = MaterialApp(
       key: old.key,
       navigatorKey: navigatorKey,
@@ -198,18 +224,12 @@ class ReCreateApp {
       scrollBehavior: old.scrollBehavior,
       themeAnimationStyle: old.themeAnimationStyle,
     );
-    return (
-      materialApp: materialApp,
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      navigatorKey: navigatorKey
-    );
+    return materialApp;
   }
 
-  static ({
-    CupertinoApp cupertinoApp,
-    GlobalKey<NavigatorState> navigatorKey,
-  }) cupertinoApp(CupertinoApp old) {
-    var navigatorKey = old.navigatorKey ?? GlobalKey<NavigatorState>();
+  static CupertinoApp cupertinoApp(CupertinoApp old,
+      GlobalKey<NavigatorState> NewNavigatorKey) {
+    var navigatorKey = old.navigatorKey ?? NewNavigatorKey;
     CupertinoApp cupertinoApp = CupertinoApp(
       key: old.key,
       navigatorKey: navigatorKey,
@@ -241,6 +261,6 @@ class ReCreateApp {
       restorationScopeId: old.restorationScopeId,
       scrollBehavior: old.scrollBehavior,
     );
-    return (cupertinoApp: cupertinoApp, navigatorKey: navigatorKey);
+    return cupertinoApp;
   }
 }

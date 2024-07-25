@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:responsive_ui/responsive_ui.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final materialAppKey = ValueKey("App");
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
         designHeight: 960,
         builder: (context, DeviceDetails details) {
           return MaterialApp(
+            key: materialAppKey,
             home: MyHomePage(),
           );
         });
@@ -32,11 +34,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
