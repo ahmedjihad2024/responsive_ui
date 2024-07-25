@@ -47,7 +47,7 @@ class MyHomePage extends StatelessWidget {
 ### Width Scaling
 
 - **`100.w`**: Scales the number by the device's width scaling factor.
-- **`100.wMin`**: The maximum height to scale.
+- **`100.wMin`**: The minimum width to scale.
 
 ### Height Scaling
 
