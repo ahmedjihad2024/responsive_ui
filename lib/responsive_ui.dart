@@ -95,7 +95,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
-          Size size = Size(constraints.maxWidth, constraints.maxWidth);
+          Size size = Size(constraints.maxWidth, constraints.maxHeight);
           // var size =
           //     WidgetsBinding.instance.platformDispatcher.views.first.physicalSize /
           //         WidgetsBinding
