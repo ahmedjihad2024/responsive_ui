@@ -92,76 +92,81 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     TargetPlatform platform = Theme
         .of(context)
         .platform;
-    return OrientationBuilder(builder: (context, orientation) {
-      var size =
-          WidgetsBinding.instance.platformDispatcher.views.first.physicalSize /
-              WidgetsBinding
-                  .instance.platformDispatcher.views.first.devicePixelRatio;
-      // final Orientation orientation = size.width > size.height ? Orientation.landscape : Orientation.portrait;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return OrientationBuilder(builder: (context, orientation) {
+          Size size = Size(constraints.maxWidth, constraints.maxWidth);
+          // var size =
+          //     WidgetsBinding.instance.platformDispatcher.views.first.physicalSize /
+          //         WidgetsBinding
+          //             .instance.platformDispatcher.views.first.devicePixelRatio;
+          // final Orientation orientation = size.width > size.height ? Orientation.landscape : Orientation.portrait;
 
-      final isMobile =
-          platform == TargetPlatform.android || platform == TargetPlatform.iOS;
+          final isMobile =
+              platform == TargetPlatform.android || platform == TargetPlatform.iOS;
 
-      var deviceType = _deviceType(
-        width: isMobile
-            ? orientation == Orientation.landscape
-            ? size.height
-            : size.width
-            : size.width,
-        orientation: orientation,
-      );
+          var deviceType = _deviceType(
+            width: isMobile
+                ? orientation == Orientation.landscape
+                ? size.height
+                : size.width
+                : size.width,
+            orientation: orientation,
+          );
 
-      /// check if size of other platforms is mobile then
-      /// deals like a mobile
-      var isMobile2 = ((platform != TargetPlatform.iOS &&
-          platform != TargetPlatform.android) &&
-          (kIsWeb && deviceType != DEVICE_SIZE_TYPE.DESKTOP));
+          /// check if size of other platforms is mobile then
+          /// deals like a mobile
+          var isMobile2 = ((platform != TargetPlatform.iOS &&
+              platform != TargetPlatform.android) &&
+              (kIsWeb && deviceType != DEVICE_SIZE_TYPE.DESKTOP));
 
-      final originalWidth = isMobile || isMobile2
-          ? orientation == Orientation.landscape
-          ? size.height
-          : size.width
-          : size.width;
+          final originalWidth = isMobile || isMobile2
+              ? orientation == Orientation.landscape
+              ? size.height
+              : size.width
+              : size.width;
 
-      final originalHeight = isMobile || isMobile2
-          ? orientation == Orientation.landscape
-          ? size.width
-          : size.height
-          : size.height;
+          final originalHeight = isMobile || isMobile2
+              ? orientation == Orientation.landscape
+              ? size.width
+              : size.height
+              : size.height;
 
 
-      deviceDetails
-        ..setOrientation = orientation
-        ..setHeight = originalHeight
-        ..setWidth = originalWidth
-        ..setDesignHeight = _designHeight ?? deviceDetails.height
-        ..setDesignWidth = _designWidth ?? deviceDetails.width
-        ..setScaleWidth = deviceDetails.width / deviceDetails.designWidth
-        ..setScaleHeight = (_splitScreenMode
-            ? max(deviceDetails.height, 700)
-            : deviceDetails.height) /
-            deviceDetails.designHeight
-        ..setDeviceType = deviceType
-        ..setIsMobile = isMobile;
+          deviceDetails
+            ..setOrientation = orientation
+            ..setHeight = originalHeight
+            ..setWidth = originalWidth
+            ..setDesignHeight = _designHeight ?? deviceDetails.height
+            ..setDesignWidth = _designWidth ?? deviceDetails.width
+            ..setScaleWidth = deviceDetails.width / deviceDetails.designWidth
+            ..setScaleHeight = (_splitScreenMode
+                ? max(deviceDetails.height, 700)
+                : deviceDetails.height) /
+                deviceDetails.designHeight
+            ..setDeviceType = deviceType
+            ..setIsMobile = isMobile;
 
-      Widget widget = builder(context, deviceDetails);
-      if (widget is MaterialApp) {
-        if (widget.scaffoldMessengerKey != null)
-          scaffoldMessengerKey = widget.scaffoldMessengerKey!;
-        if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
-        var r = ReCreateApp.materialApp(
-            widget, navigatorKey, scaffoldMessengerKey);
-        navigator = navigatorKey.currentState;
-        return r;
-      } else if (widget is CupertinoApp) {
-        if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
-        var r = ReCreateApp.cupertinoApp(widget, navigatorKey);
-        navigator = navigatorKey.currentState;
-        return r;
-      } else {
-        return widget;
+          Widget widget = builder(context, deviceDetails);
+          if (widget is MaterialApp) {
+            if (widget.scaffoldMessengerKey != null)
+              scaffoldMessengerKey = widget.scaffoldMessengerKey!;
+            if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
+            var r = ReCreateApp.materialApp(
+                widget, navigatorKey, scaffoldMessengerKey);
+            navigator = navigatorKey.currentState;
+            return r;
+          } else if (widget is CupertinoApp) {
+            if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
+            var r = ReCreateApp.cupertinoApp(widget, navigatorKey);
+            navigator = navigatorKey.currentState;
+            return r;
+          } else {
+            return widget;
+          }
+        });
       }
-    });
+    );
   }
 
   DEVICE_SIZE_TYPE _deviceType(
