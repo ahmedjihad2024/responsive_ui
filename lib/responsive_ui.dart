@@ -11,10 +11,6 @@ part 'extensions.dart';
 
 part 'dynamic/adaptive_size.dart';
 
-part 'dynamic/adaptive_widget.dart';
-
-part 'dynamic/dynamic_orientation.dart';
-
 // scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 // navigatorKey = GlobalKey<NavigatorState>();
 
@@ -147,23 +143,23 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
             ..setDeviceType = deviceType
             ..setIsMobile = isMobile;
 
-          Widget widget = builder(context, deviceDetails);
-          if (widget is MaterialApp) {
-            if (widget.scaffoldMessengerKey != null)
-              scaffoldMessengerKey = widget.scaffoldMessengerKey!;
-            if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
-            var r = ReCreateApp.materialApp(
-                widget, navigatorKey, scaffoldMessengerKey);
-            navigator = navigatorKey.currentState;
-            return r;
-          } else if (widget is CupertinoApp) {
-            if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
-            var r = ReCreateApp.cupertinoApp(widget, navigatorKey);
-            navigator = navigatorKey.currentState;
-            return r;
-          } else {
-            return widget;
-          }
+          return builder(context, deviceDetails);
+          // if (widget is MaterialApp) {
+          //   if (widget.scaffoldMessengerKey != null)
+          //     scaffoldMessengerKey = widget.scaffoldMessengerKey!;
+          //   if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
+          //   var r = ReCreateApp.materialApp(
+          //       widget, navigatorKey, scaffoldMessengerKey);
+          //   navigator = navigatorKey.currentState;
+          //   return r;
+          // } else if (widget is CupertinoApp) {
+          //   if (widget.navigatorKey != null) navigatorKey = widget.navigatorKey!;
+          //   var r = ReCreateApp.cupertinoApp(widget, navigatorKey);
+          //   navigator = navigatorKey.currentState;
+          //   return r;
+          // } else {
+          //   return widget;
+          // }
         });
       }
     );
@@ -182,90 +178,90 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 }
 
 
-class ReCreateApp {
-  static MaterialApp materialApp(MaterialApp old,
-      GlobalKey<NavigatorState> NewNavigatorKey,
-      GlobalKey<ScaffoldMessengerState> newScaffoldMessengerKey) {
-    var scaffoldMessengerKey =
-        old.scaffoldMessengerKey ?? newScaffoldMessengerKey;
-    var navigatorKey = old.navigatorKey ?? NewNavigatorKey;
-    MaterialApp materialApp = MaterialApp(
-      key: old.key,
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      home: old.home,
-      routes: old.routes ?? const <String, WidgetBuilder>{},
-      initialRoute: old.initialRoute,
-      onGenerateRoute: old.onGenerateRoute,
-      onGenerateInitialRoutes: old.onGenerateInitialRoutes,
-      onUnknownRoute: old.onUnknownRoute,
-      onNavigationNotification: old.onNavigationNotification,
-      navigatorObservers: old.navigatorObservers ?? const <NavigatorObserver>[],
-      builder: old.builder,
-      title: old.title,
-      onGenerateTitle: old.onGenerateTitle,
-      color: old.color,
-      theme: old.theme,
-      darkTheme: old.darkTheme,
-      highContrastTheme: old.highContrastTheme,
-      highContrastDarkTheme: old.highContrastDarkTheme,
-      themeMode: old.themeMode,
-      themeAnimationDuration: old.themeAnimationDuration,
-      themeAnimationCurve: old.themeAnimationCurve,
-      locale: old.locale,
-      localizationsDelegates: old.localizationsDelegates,
-      localeListResolutionCallback: old.localeListResolutionCallback,
-      localeResolutionCallback: old.localeResolutionCallback,
-      supportedLocales: old.supportedLocales,
-      debugShowMaterialGrid: old.debugShowMaterialGrid,
-      showPerformanceOverlay: old.showPerformanceOverlay,
-      checkerboardRasterCacheImages: old.checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: old.checkerboardOffscreenLayers,
-      showSemanticsDebugger: old.showSemanticsDebugger,
-      debugShowCheckedModeBanner: old.debugShowCheckedModeBanner,
-      shortcuts: old.shortcuts,
-      actions: old.actions,
-      restorationScopeId: old.restorationScopeId,
-      scrollBehavior: old.scrollBehavior,
-      themeAnimationStyle: old.themeAnimationStyle,
-    );
-    return materialApp;
-  }
-
-  static CupertinoApp cupertinoApp(CupertinoApp old,
-      GlobalKey<NavigatorState> NewNavigatorKey) {
-    var navigatorKey = old.navigatorKey ?? NewNavigatorKey;
-    CupertinoApp cupertinoApp = CupertinoApp(
-      key: old.key,
-      navigatorKey: navigatorKey,
-      home: old.home,
-      routes: old.routes ?? const <String, WidgetBuilder>{},
-      initialRoute: old.initialRoute,
-      onGenerateRoute: old.onGenerateRoute,
-      onGenerateInitialRoutes: old.onGenerateInitialRoutes,
-      onUnknownRoute: old.onUnknownRoute,
-      onNavigationNotification: old.onNavigationNotification,
-      navigatorObservers: old.navigatorObservers ?? const <NavigatorObserver>[],
-      builder: old.builder,
-      title: old.title,
-      onGenerateTitle: old.onGenerateTitle,
-      color: old.color,
-      theme: old.theme,
-      locale: old.locale,
-      localizationsDelegates: old.localizationsDelegates,
-      localeListResolutionCallback: old.localeListResolutionCallback,
-      localeResolutionCallback: old.localeResolutionCallback,
-      supportedLocales: old.supportedLocales,
-      showPerformanceOverlay: old.showPerformanceOverlay,
-      checkerboardRasterCacheImages: old.checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: old.checkerboardOffscreenLayers,
-      showSemanticsDebugger: old.showSemanticsDebugger,
-      debugShowCheckedModeBanner: old.debugShowCheckedModeBanner,
-      shortcuts: old.shortcuts,
-      actions: old.actions,
-      restorationScopeId: old.restorationScopeId,
-      scrollBehavior: old.scrollBehavior,
-    );
-    return cupertinoApp;
-  }
-}
+// class ReCreateApp {
+//   static MaterialApp materialApp(MaterialApp old,
+//       GlobalKey<NavigatorState> NewNavigatorKey,
+//       GlobalKey<ScaffoldMessengerState> newScaffoldMessengerKey) {
+//     var scaffoldMessengerKey =
+//         old.scaffoldMessengerKey ?? newScaffoldMessengerKey;
+//     var navigatorKey = old.navigatorKey ?? NewNavigatorKey;
+//     MaterialApp materialApp = MaterialApp(
+//       key: old.key,
+//       navigatorKey: navigatorKey,
+//       scaffoldMessengerKey: scaffoldMessengerKey,
+//       home: old.home,
+//       routes: old.routes ?? const <String, WidgetBuilder>{},
+//       initialRoute: old.initialRoute,
+//       onGenerateRoute: old.onGenerateRoute,
+//       onGenerateInitialRoutes: old.onGenerateInitialRoutes,
+//       onUnknownRoute: old.onUnknownRoute,
+//       onNavigationNotification: old.onNavigationNotification,
+//       navigatorObservers: old.navigatorObservers ?? const <NavigatorObserver>[],
+//       builder: old.builder,
+//       title: old.title,
+//       onGenerateTitle: old.onGenerateTitle,
+//       color: old.color,
+//       theme: old.theme,
+//       darkTheme: old.darkTheme,
+//       highContrastTheme: old.highContrastTheme,
+//       highContrastDarkTheme: old.highContrastDarkTheme,
+//       themeMode: old.themeMode,
+//       themeAnimationDuration: old.themeAnimationDuration,
+//       themeAnimationCurve: old.themeAnimationCurve,
+//       locale: old.locale,
+//       localizationsDelegates: old.localizationsDelegates,
+//       localeListResolutionCallback: old.localeListResolutionCallback,
+//       localeResolutionCallback: old.localeResolutionCallback,
+//       supportedLocales: old.supportedLocales,
+//       debugShowMaterialGrid: old.debugShowMaterialGrid,
+//       showPerformanceOverlay: old.showPerformanceOverlay,
+//       checkerboardRasterCacheImages: old.checkerboardRasterCacheImages,
+//       checkerboardOffscreenLayers: old.checkerboardOffscreenLayers,
+//       showSemanticsDebugger: old.showSemanticsDebugger,
+//       debugShowCheckedModeBanner: old.debugShowCheckedModeBanner,
+//       shortcuts: old.shortcuts,
+//       actions: old.actions,
+//       restorationScopeId: old.restorationScopeId,
+//       scrollBehavior: old.scrollBehavior,
+//       themeAnimationStyle: old.themeAnimationStyle,
+//     );
+//     return materialApp;
+//   }
+//
+//   static CupertinoApp cupertinoApp(CupertinoApp old,
+//       GlobalKey<NavigatorState> NewNavigatorKey) {
+//     var navigatorKey = old.navigatorKey ?? NewNavigatorKey;
+//     CupertinoApp cupertinoApp = CupertinoApp(
+//       key: old.key,
+//       navigatorKey: navigatorKey,
+//       home: old.home,
+//       routes: old.routes ?? const <String, WidgetBuilder>{},
+//       initialRoute: old.initialRoute,
+//       onGenerateRoute: old.onGenerateRoute,
+//       onGenerateInitialRoutes: old.onGenerateInitialRoutes,
+//       onUnknownRoute: old.onUnknownRoute,
+//       onNavigationNotification: old.onNavigationNotification,
+//       navigatorObservers: old.navigatorObservers ?? const <NavigatorObserver>[],
+//       builder: old.builder,
+//       title: old.title,
+//       onGenerateTitle: old.onGenerateTitle,
+//       color: old.color,
+//       theme: old.theme,
+//       locale: old.locale,
+//       localizationsDelegates: old.localizationsDelegates,
+//       localeListResolutionCallback: old.localeListResolutionCallback,
+//       localeResolutionCallback: old.localeResolutionCallback,
+//       supportedLocales: old.supportedLocales,
+//       showPerformanceOverlay: old.showPerformanceOverlay,
+//       checkerboardRasterCacheImages: old.checkerboardRasterCacheImages,
+//       checkerboardOffscreenLayers: old.checkerboardOffscreenLayers,
+//       showSemanticsDebugger: old.showSemanticsDebugger,
+//       debugShowCheckedModeBanner: old.debugShowCheckedModeBanner,
+//       shortcuts: old.shortcuts,
+//       actions: old.actions,
+//       restorationScopeId: old.restorationScopeId,
+//       scrollBehavior: old.scrollBehavior,
+//     );
+//     return cupertinoApp;
+//   }
+// }

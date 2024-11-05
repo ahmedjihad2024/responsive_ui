@@ -3,10 +3,12 @@ part of "responsive_ui.dart";
 extension ResponsiveSizes on num {
   double get w => this * deviceDetails.scaleWidth;
   double get wMin => max(toDouble(), w);
+  double get wp => this * deviceDetails.width;
   // double wBetween(double value) => w.clamp(toDouble(), value);
 
   double get h => this * deviceDetails.scaleHeight;
   double get hMin => max(toDouble(), h);
+  double get hp => this * deviceDetails.height;
   // double hBetween(double value) => h.clamp(toDouble(), value);
 
   // for the fonts scale
@@ -23,7 +25,8 @@ extension ResponsiveSizes on num {
   double get spAdaptMin =>  max(toDouble(), spAdapt);
 
   // for the font
-  double get sp =>this * ((deviceDetails.scaleWidth + deviceDetails.scaleHeight) / 3) ;
+  double get sp => this * (deviceDetails.scaleWidth + deviceDetails.scaleHeight)/ 1.4 ;
+  // double get sp2 => this * deviceDetails.scaleWidth;
 
   // double get spMin => min(toDouble(), sp);
 

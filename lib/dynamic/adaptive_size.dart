@@ -5,15 +5,15 @@ double size({Object? mobile, Object? tablet, Object? desktop}) {
   return switch (deviceDetails.deviceType) {
     DEVICE_SIZE_TYPE.MOBILE => (mobile ?? tablet ?? desktop!).apply<double>(
         (it) => it is (num, num)
-            ? orienSize(it.$1.toDouble(), it.$2.toDouble())
+            ? orientationSize(it.$1.toDouble(), it.$2.toDouble())
             : it),
     DEVICE_SIZE_TYPE.TABLET => (tablet ?? mobile ?? desktop!).apply<double>(
         (it) => it is (num, num)
-            ? orienSize(it.$1.toDouble(), it.$2.toDouble())
+            ? orientationSize(it.$1.toDouble(), it.$2.toDouble())
             : it),
     DEVICE_SIZE_TYPE.DESKTOP => (desktop ?? tablet ?? mobile!).apply<double>(
         (it) => it is (num, num)
-            ? orienSize(it.$1.toDouble(), it.$2.toDouble())
+            ? orientationSize(it.$1.toDouble(), it.$2.toDouble())
             : it),
     _ => 0
   };
@@ -37,7 +37,7 @@ double desktopSize(double other, double desktop) {
   }
 }
 
-double orienSize(double portrait, double landscape) {
+double orientationSize(double portrait, double landscape) {
   return deviceDetails.orientation == Orientation.landscape
       ? landscape
       : portrait;
