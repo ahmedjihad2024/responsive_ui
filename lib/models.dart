@@ -14,6 +14,7 @@ class DeviceDetails {
   late bool _isAdaptFontOnWindows;
   late bool _isMobile;
   late bool _adaptWidthAndHeightOnWindows;
+  late TargetPlatform _targetPlatform;
 
 
   set setAdaptWidthAndHeightOnWindows(bool isAdapt) => _adaptWidthAndHeightOnWindows = isAdapt;
@@ -48,5 +49,8 @@ class DeviceDetails {
 
   set setOrientation(Orientation orientation) => _orientation = orientation;
   Orientation get orientation => _orientation;
+
+  set setTargetPlatform(TargetPlatform platform) => _targetPlatform = platform;
+  TargetPlatform get targetPlatform => _targetPlatform;
 
 }

@@ -15,9 +15,6 @@ part 'dynamic/adaptive_size.dart';
 // navigatorKey = GlobalKey<NavigatorState>();
 
 final DeviceDetails deviceDetails = DeviceDetails();
-late GlobalKey<NavigatorState> navigatorKey;
-late GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
-late NavigatorState? navigator;
 
 class ResponsiveLayout extends StatefulWidget {
   final Widget Function(BuildContext context, DeviceDetails info) builder;
@@ -79,10 +76,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   @override
   void initState() {
-    scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-    navigatorKey = GlobalKey<NavigatorState>();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     TargetPlatform platform = Theme
@@ -141,7 +137,8 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
                 : deviceDetails.height) /
                 deviceDetails.designHeight
             ..setDeviceType = deviceType
-            ..setIsMobile = isMobile;
+            ..setIsMobile = isMobile
+            ..setTargetPlatform = platform;
 
           return builder(context, deviceDetails);
           // if (widget is MaterialApp) {

@@ -36,7 +36,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("Hello", style: TextStyle(fontSize: 16.sp),),
+        child: Text("Hello", style: TextStyle(fontSize: desktopSize(size(
+            mobile: 40.sp,
+            desktop: 16.sp,
+            tablet: 5.sp)
+            , 14.sp))),
       )
     );
   }

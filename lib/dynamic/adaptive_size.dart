@@ -22,7 +22,7 @@ double size({Object? mobile, Object? tablet, Object? desktop}) {
 double desktopSize(double other, double desktop) {
   if (TargetPlatform.values
       .sublist(3, 6)
-      .contains(Theme.of(scaffoldMessengerKey.currentContext!).platform)) {
+      .contains(deviceDetails.targetPlatform)) {
     if(kIsWeb){
       if(deviceDetails.deviceType == DEVICE_SIZE_TYPE.DESKTOP){
         return desktop;
